@@ -15,7 +15,7 @@
       "lint:check": "eslint .",
       "lint:fix": "eslint --fix ."
     },
-    "comitlint": {
+    "commitlint": {
       "extends": [
         "@commitlint/config-conventional"
       ]

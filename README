@@ -1,0 +1,11 @@
+# Pay U First API
+
+## A financial planning API to make you life easier and better
+
+### How to start locally:
+
+- Copy .env.example file to a .env and populate the environment variables
+- Run `docker compose up` to set db and aditional services
+- Run `yarn` to install dependencies
+- Run `yarn dev`
+

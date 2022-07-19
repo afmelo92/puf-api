@@ -7,7 +7,9 @@ export const list = async (ctx) => {
     try {
         const users = await prisma.user.findMany();
 
-        ctx.body = users;
+        ctx.body = {
+            users,
+        };
     } catch (error) {
         logger.log({
             level: 'error',
@@ -15,7 +17,9 @@ export const list = async (ctx) => {
         });
 
         ctx.status = 500;
-        ctx.body = 'Oops! Ocorreu um erro ao obter usuários.';
+        ctx.body = {
+            message: 'Oops! Ocorreu um erro ao obter usuários.',
+        };
         return;
     }
 };
@@ -30,7 +34,9 @@ export const show = async (ctx) => {
             },
         });
 
-        ctx.body = user;
+        ctx.body = {
+            user,
+        };
     } catch (error) {
         logger.log({
             level: 'error',
@@ -38,7 +44,9 @@ export const show = async (ctx) => {
         });
 
         ctx.status = 500;
-        ctx.body = 'Oops! Ocorreu um erro ao obter o usuário.';
+        ctx.body = {
+            message: 'Oops! Ocorreu um erro ao obter o usuário.',
+        };
         return;
     }
 };
@@ -60,7 +68,9 @@ export const create = async (ctx) => {
         });
 
         ctx.status = 201;
-        ctx.body = user;
+        ctx.body = {
+            user,
+        };
     } catch (error) {
         logger.log({
             level: 'error',
@@ -68,7 +78,9 @@ export const create = async (ctx) => {
         });
 
         ctx.status = 500;
-        ctx.body = 'Oops! Ocorreu um erro ao criar o usuário.';
+        ctx.body = {
+            message: 'Oops! Ocorreu um erro ao criar o usuário.',
+        };
         return;
     }
 };
@@ -88,7 +100,9 @@ export const update = async (ctx) => {
             },
         });
 
-        ctx.body = user;
+        ctx.body = {
+            user,
+        };
     } catch (error) {
         logger.log({
             level: 'error',
@@ -96,7 +110,9 @@ export const update = async (ctx) => {
         });
 
         ctx.status = 500;
-        ctx.body = 'Oops! Ocorreu um erro ao atualizar o usuário.';
+        ctx.body = {
+            message: 'Oops! Ocorreu um erro ao atualizar o usuário.',
+        };
         return;
     }
 };
@@ -110,7 +126,9 @@ export const remove = async (ctx) => {
             },
         });
 
-        ctx.body = user;
+        ctx.body = {
+            user,
+        };
     } catch (error) {
         logger.log({
             level: 'error',
@@ -118,7 +136,9 @@ export const remove = async (ctx) => {
         });
 
         ctx.status = 500;
-        ctx.body = 'Oops! Ocorreu um erro ao deletar o usuário.';
+        ctx.body = {
+            message: 'Oops! Ocorreu um erro ao deletar o usuário.',
+        };
         return;
     }
 };

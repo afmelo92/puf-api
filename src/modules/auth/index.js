@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken';
+import * as bcrypt from 'bcrypt';
 
 import { prisma } from '~/data';
 import authConfig from '~/config/auth';
@@ -8,14 +9,15 @@ export const login = async (ctx) => {
     const { email, password } = ctx.request.body;
 
     try {
-        const user = await prisma.user.findFirst({
+        const user = await prisma.user.findUnique({
             where: {
                 email,
-                password,
             },
         });
 
-        if (!user) {
+        const isPasswordEqual = await bcrypt.compare(password, user.password);
+
+        if (!user || !isPasswordEqual) {
             ctx.status = 400;
             ctx.body = {
                 message: 'Combinação de usuário e senha não correspondem.',

@@ -9,4 +9,4 @@ app.use(bodyParser());
 app.use(router.routes());
 app.use(router.allowedMethods());
 
-app.listen(process.env.SERVER_PORT);
+app.listen(process.env.SERVER_PORT || 9001);

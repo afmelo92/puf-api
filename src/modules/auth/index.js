@@ -15,12 +15,21 @@ export const login = async (ctx) => {
             },
         });
 
-        const isPasswordEqual = await bcrypt.compare(password, user.password);
-
-        if (!user || !isPasswordEqual) {
+        if (!user) {
             ctx.status = 400;
             ctx.body = {
-                message: 'Combinação de usuário e senha não correspondem.',
+                message: 'Combinação de usuário/senha não corresponde.',
+            };
+
+            return;
+        }
+
+        const isPasswordEqual = await bcrypt.compare(password, user.password);
+
+        if (!isPasswordEqual) {
+            ctx.status = 400;
+            ctx.body = {
+                message: 'Combinação de usuário/senha não corresponde.',
             };
 
             return;

@@ -54,11 +54,10 @@ export const show = async (ctx) => {
 export const create = async (ctx) => {
     const { name, email, password } = ctx.request.body;
 
-    const hashSalt = 8;
-
-    const hashedPassword = await bcrypt.hash(password, hashSalt);
-
     try {
+        const hashSalt = 8;
+        const hashedPassword = await bcrypt.hash(password, hashSalt);
+
         const user = await prisma.user.create({
             data: {
                 name,
@@ -88,6 +87,7 @@ export const create = async (ctx) => {
 export const update = async (ctx) => {
     const { id } = ctx.request.params;
     const { name, email, password } = ctx.request.body;
+
     try {
         const user = await prisma.user.update({
             where: {
@@ -119,6 +119,7 @@ export const update = async (ctx) => {
 
 export const remove = async (ctx) => {
     const { id } = ctx.request.params;
+
     try {
         const user = await prisma.user.delete({
             where: {

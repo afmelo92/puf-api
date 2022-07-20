@@ -16,7 +16,8 @@
     "lint": "yarn fix:lint src/**/*.{js,ts,md,json}",
     "prebuild": "rm -Rf ./dist",
     "build": "babel src --extensions \".js\" --ignore \"*.spec.js,*.test.js\" --out-dir dist --copy-files",
-    "dev": "nodemon --exec babel-node -- -r dotenv-safe/config src/index.js"
+    "dev": "nodemon --exec babel-node -- -r dotenv-safe/config src/index.js",
+    "test": "yarn jest"
   },
   "commitlint": {
     "extends": [
@@ -44,10 +45,12 @@
     "eslint-plugin-json": "^3.1.0",
     "eslint-plugin-prettier": "^4.2.1",
     "husky": "^8.0.1",
+    "jest": "^28.1.3",
     "lint-staged": "^13.0.3",
     "nodemon": "^2.0.19",
     "npm-run-all": "^4.1.5",
-    "prettier": "^2.7.1"
+    "prettier": "^2.7.1",
+    "supertest": "^6.2.4"
   },
   "dependencies": {
     "@koa/router": "^11.0.1",

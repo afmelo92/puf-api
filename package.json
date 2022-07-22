@@ -9,6 +9,7 @@
     "email": "andre@afmelo.com"
   },
   "scripts": {
+    "db:migrate": "yarn prisma migrate dev",
     "fix": "run-s \"fix:* {@}\" --",
     "fix:lint": "eslint --fix --no-error-on-unmatched-pattern",
     "fix:format": "prettier --write",

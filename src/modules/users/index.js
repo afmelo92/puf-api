@@ -1,5 +1,6 @@
 import * as bcrypt from 'bcrypt';
 
+import authConfig from '~/config/auth';
 import { prisma } from '~/data';
 import { logger } from '~/utils/logger';
 
@@ -55,8 +56,10 @@ export const create = async (ctx) => {
     const { name, email, password } = ctx.request.body;
 
     try {
-        const hashSalt = 8;
-        const hashedPassword = await bcrypt.hash(password, hashSalt);
+        const hashedPassword = await bcrypt.hash(
+            password,
+            authConfig.hash.salt
+        );
 
         const user = await prisma.user.create({
             data: {

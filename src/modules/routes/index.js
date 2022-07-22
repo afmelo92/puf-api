@@ -1,7 +1,7 @@
 import Router from '@koa/router';
 
 import * as users from '~/modules/users';
-import * as auth from '~/modules/auth';
+import * as authController from '~/modules/auth/controllers';
 
 export const router = new Router();
 
@@ -13,4 +13,4 @@ router.put('/users/:id', users.update);
 router.delete('/users/:id', users.remove);
 
 // Auth
-router.post('/auth/login', auth.login);
+router.post('/auth/login', authController.login);

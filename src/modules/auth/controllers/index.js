@@ -1,19 +1,22 @@
-import jwt from 'jsonwebtoken';
-import * as bcrypt from 'bcrypt';
-
-import { prisma } from '~/data';
-import authConfig from '~/config/auth';
 import { logger } from '~/utils/logger';
+import * as UsersRepository from '~/modules/users/repositories';
+import * as HashService from '~/modules/auth/services/HashService';
+import * as TokenService from '~/modules/auth/services/TokenService';
 
 export const login = async (ctx) => {
     const { email, password } = ctx.request.body;
 
     try {
-        const user = await prisma.user.findUnique({
-            where: {
-                email,
-            },
-        });
+        if (!email || !password) {
+            ctx.status = 400;
+            ctx.body = {
+                message: 'E-mail e senha obrigatórios.',
+            };
+
+            return;
+        }
+
+        const user = await UsersRepository.findUserByEmail(email);
 
         if (!user) {
             ctx.status = 400;
@@ -24,7 +27,10 @@ export const login = async (ctx) => {
             return;
         }
 
-        const isPasswordEqual = await bcrypt.compare(password, user.password);
+        const isPasswordEqual = await HashService.compare(
+            password,
+            user.password
+        );
 
         if (!isPasswordEqual) {
             ctx.status = 400;
@@ -35,9 +41,9 @@ export const login = async (ctx) => {
             return;
         }
 
-        const token = jwt.sign({ sub: user.id }, authConfig.jwt.secret, {
-            expiresIn: authConfig.jwt.expiresIn,
-        });
+        const jwtPayload = { sub: user.id };
+
+        const token = TokenService.generate(jwtPayload);
 
         const responseUser = {
             ...user,

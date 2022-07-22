@@ -39,8 +39,13 @@ export const login = async (ctx) => {
             expiresIn: authConfig.jwt.expiresIn,
         });
 
+        const responseUser = {
+            ...user,
+            password: null,
+        };
+
         ctx.body = {
-            user,
+            user: responseUser,
             token,
         };
     } catch (error) {

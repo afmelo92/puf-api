@@ -1,12 +1,10 @@
-import * as bcrypt from 'bcrypt';
-
-import authConfig from '~/config/auth';
-import { prisma } from '~/data';
 import { logger } from '~/utils/logger';
+
+import * as UsersRepository from '~/modules/users/repositories';
 
 export const list = async (ctx) => {
     try {
-        const users = await prisma.user.findMany();
+        const users = await UsersRepository.listAllUsers();
 
         ctx.body = {
             users,
@@ -29,11 +27,7 @@ export const show = async (ctx) => {
     const { id } = ctx.request.params;
 
     try {
-        const user = await prisma.user.findFirst({
-            where: {
-                id,
-            },
-        });
+        const user = await UsersRepository.findUserById(id);
 
         ctx.body = {
             user,
@@ -56,17 +50,19 @@ export const create = async (ctx) => {
     const { name, email, password } = ctx.request.body;
 
     try {
-        const hashedPassword = await bcrypt.hash(
-            password,
-            authConfig.hash.salt
-        );
+        if (!email || !password) {
+            ctx.status = 400;
+            ctx.body = {
+                message: 'E-mail e senha obrigatórios.',
+            };
 
-        const user = await prisma.user.create({
-            data: {
-                name,
-                email,
-                password: hashedPassword,
-            },
+            return;
+        }
+
+        const user = await UsersRepository.createUser({
+            name,
+            email,
+            password,
         });
 
         ctx.status = 201;
@@ -89,17 +85,31 @@ export const create = async (ctx) => {
 
 export const update = async (ctx) => {
     const { id } = ctx.request.params;
-    const { name, email, password } = ctx.request.body;
+    const { name, email, password, deletedAt } = ctx.request.body;
 
     try {
-        const user = await prisma.user.update({
-            where: {
-                id,
-            },
+        if (email) {
+            const isEmailAlreadyUsed = await UsersRepository.findUserByEmail(
+                email
+            );
+
+            if (isEmailAlreadyUsed && isEmailAlreadyUsed.id !== id) {
+                ctx.status = 400;
+                ctx.body = {
+                    message: 'E-mail já utilizado.',
+                };
+
+                return;
+            }
+        }
+
+        const user = await UsersRepository.updateUser({
+            id,
             data: {
                 name,
                 email,
                 password,
+                deletedAt,
             },
         });
 
@@ -124,11 +134,18 @@ export const remove = async (ctx) => {
     const { id } = ctx.request.params;
 
     try {
-        const user = await prisma.user.delete({
-            where: {
-                id,
-            },
-        });
+        const checkDeletedAt = await UsersRepository.findUserById(id);
+
+        if (checkDeletedAt.deletedAt) {
+            ctx.status = 400;
+            ctx.body = {
+                message: 'Usuário já removido.',
+            };
+
+            return;
+        }
+
+        const user = await UsersRepository.removeUserById(id);
 
         ctx.body = {
             user,
